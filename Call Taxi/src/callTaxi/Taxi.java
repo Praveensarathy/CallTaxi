@@ -3,7 +3,8 @@ package callTaxi;
 import java.util.*;
 
 public class Taxi {
-	private int id =1,taxiCurPoint ='a', taxiEarning =0,taxiTrip=0,taxiCurTime=6,taxiId = id++;	
+	static private int id =0;
+	private int	taxiCurPoint ='a', taxiEarning =0,taxiTrip=0,taxiCurTime=6,taxiId = id++,taxiBookingId;	
 	public int getTaxiCurPoint() {
 		return taxiCurPoint;
 	}
@@ -43,39 +44,72 @@ public class Taxi {
 	public void setTaxiId(int taxiId) {
 		this.taxiId = taxiId;
 	}
-
+	List<Taxi> taxies = new ArrayList<Taxi>();
 	public List<Taxi> createTaxi(int n) {
-		int i =0;
-		List<Taxi> taxies = new ArrayList<Taxi>();
+		int i;
 		for(i=0;i<n;i++) {
 			Taxi t = new Taxi();
 			taxies.add(t);
 		}
 		return taxies;
 	}
-
-	public boolean isAvail(List<Taxi> taxies) {
-		Booking book = new Booking();
-		System.out.println(book.getCusDrop());
-//		for(Taxi taxi : taxies) {
-//			if(getpickUpTime > 6)  {	
-//			if(t.getCurPoint() == this.pickUp  && t.getCurTime() < this.pickUpTime) {
-//				int dif = Math.abs(drop - this.pickUp);
-//				int km = 15*dif;
-//				t.setEarning(100 + ((km-5)*10));
-//				
-//				t.setCurPoint(this.drop);
-//				t.setCurTime(this.pickUpTime + dif);
-//				System.out.println(t);
-//				return true;
-//				}
-//			}	
-//		}
+	public boolean isvail( Booking book) {
+		for(Taxi taxi : taxies) {
+			
+				if(book.getCurPickUp() == taxi.taxiCurPoint && book.getCustPickUpTime() >= taxi.taxiCurTime) {
+					int dif = Math.abs(book.getCusDrop() - taxi.taxiCurPoint);
+					int km = 15*dif;
+					book.setJourneyCost(100 + ((km-5)*10));
+					taxi.setTaxiEarning(taxi.getTaxiEarning() + book.getJourneyCost() );
+					taxi.setTaxiCurPoint(book.getCusDrop());
+					taxi.setTaxiCurTime(book.getCustPickUpTime() + dif);
+					book.setCusTaxiId(taxi.taxiId);
+					taxi.taxiTrip++;
+					taxi.taxiBookingId = book.getBookingId();
+					System.out.println("\n");
+					return true;
+				}
+				else if(book.getCurPickUp() > taxi.taxiCurPoint && book.getCustPickUpTime() > taxi.taxiCurTime) 
+				{
+					int dif = Math.abs(book.getCusDrop() - taxi.taxiCurPoint);
+					int km = 15*dif;
+					book.setJourneyCost(100 + ((km-5)*10));
+					taxi.setTaxiEarning(taxi.getTaxiEarning() + book.getJourneyCost() );
+					taxi.setTaxiCurPoint(book.getCusDrop());
+					taxi.setTaxiCurTime(book.getCustPickUpTime() + dif);
+					taxi.taxiTrip++;
+					taxi.taxiBookingId = book.getBookingId();
+					book.setCusTaxiId(taxi.taxiId);
+					System.out.println("\n");
+					return true;
+				}
+			}
+		System.out.println("Sorry Taxi not Available");
 		return false;
+	}
+	public void TaxiStatus(ArrayList<Booking> bookings) {
+		System.out.println("--------------------------------------------------------------------");
+		for(Taxi taxi : taxies) {
+			System.out.printf("%-15s%-15s%-15s%-15s%-15s\n","|BookingId|","|PickUpTime|","|PickUpLocation|", "|DropLocation|", "Earning");
+			
+			for(Booking book : bookings) {
 		
+				if(taxi.taxiBookingId == book.getBookingId() && taxi.taxiTrip > 0 ) {
+					System.out.printf("%-15d%-15d%-15c%-15c%-15d\n",book.getBookingId(),book.getCustPickUpTime(),book.getCurPickUp(), book.getCusDrop(), book.getJourneyCost());
+				}
+			}
+			System.out.printf("Taxi Id : %-20d \t\t  Total Earning--> %5d\n", taxi.taxiId , taxi.getTaxiEarning());
+			System.out.println("--------------------------------------------------------------------");
+		}
 		
 	}
-	
-	
-	
+
+	public int getTaxiBookingId() {
+		return taxiBookingId;
+	}
+
+	public void setTaxiBookingId(int taxiBookingId) {
+		this.taxiBookingId = taxiBookingId;
+	}
+
 }
