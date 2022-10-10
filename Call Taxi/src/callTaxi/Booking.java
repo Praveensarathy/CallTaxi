@@ -2,6 +2,7 @@ package callTaxi;
 
 import java.util.*;
 
+
 public class Booking {
 	public static int id =1;
 	private int bookingId,CustPickUpTime,cusTaxiId,journeyCost;
@@ -45,20 +46,58 @@ public class Booking {
 	}
 	
 	ArrayList<Booking> bookings = new ArrayList();
-	public void cusDetails(Taxi numberOfTaxies, Booking book) {
+	public void cusDetails(Taxi numberOfTaxies) {
 		this.setBookingId(Booking.id++);
-		System.out.println("Customer Id: "+ this.getBookingId());
-		System.out.print("pickUp point :");
-		this.setCurPickUp(Main.sc.next().charAt(0));
-
-		System.out.print("drop point :");
-		this.setCusDrop(Main.sc.next().charAt(0));
-
-		System.out.print("pickUp Time :");
-		this.setCustPickUpTime(Main.sc.nextInt());
-		if(numberOfTaxies.isvail(book)) {
-			bookings.add(book);
+		System.out.println("  Customer Id   : "+ this.getBookingId() );
+		System.out.println();
+		System.out.print("  pickUp point \n[a][b][c][d][e] : ");
+		this.setCurPickUp(Booking.validateName().charAt(0));
+		System.out.println();
+		System.out.print("  drop point \n[a][b][c][d][e] : ");
+		this.setCusDrop(Booking.validateName().charAt(0));
+		System.out.println();
+		System.out.print("pickUp Time[6-12] : ");
+		this.setCustPickUpTime(Booking.validateInteger());
+		System.out.println();
+		
+	}
+	public static String validateName() {
+		String value = "";
+		boolean handled = false;
+		while(!handled) {
+			try {
+				value = Main.sc.nextLine();
+				if(value.charAt(0) >= 'a' && value.charAt(0) <= 'e') {
+					
+					handled = true;
+				}
+				else {
+					System.out.print("Please choose these Location only [a][b][c][d][e]:");
+					handled = false;
+				}
+				
+			}
+			catch(Exception e) {
+				System.out.println("Enter valid name! : ");
+				handled =  false;
+			}
 		}
+		return value;
+	}
+	public static int validateInteger() {
+		int value = 0;
+		boolean handled = false;
+		while(!handled) {
+			try {
+				value = Integer.parseInt(Main.sc.nextLine());
+				handled = true;
+			}
+			catch(Exception e){
+				System.out.print("Enter valid option[1][2][3]  : ");
+				handled = false;
+			}
+		}
+		return value;
 	}
 	public int getCusTaxiId() {
 		return cusTaxiId;
@@ -72,5 +111,6 @@ public class Booking {
 	public void setJourneyCost(int journeyCost) {
 		this.journeyCost = journeyCost;
 	}
+
 
 }

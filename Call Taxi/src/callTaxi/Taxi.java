@@ -4,6 +4,7 @@ import java.util.*;
 
 public class Taxi {
 	static private int id =0;
+	private String taxiDetail;
 	private int	taxiCurPoint ='a', taxiEarning =0,taxiTrip=0,taxiCurTime=6,taxiId = id++,taxiBookingId;	
 	public int getTaxiCurPoint() {
 		return taxiCurPoint;
@@ -44,16 +45,34 @@ public class Taxi {
 	public void setTaxiId(int taxiId) {
 		this.taxiId = taxiId;
 	}
+	public int getTaxiBookingId() {
+		return taxiBookingId;
+	}
+
+	public void setTaxiBookingId(int taxiBookingId) {
+		this.taxiBookingId = taxiBookingId;
+	}
+
+	public String getTaxiDetail() {
+		return taxiDetail;
+	}
+
+	public void setTaxiDetail(String taxiDetatil) {
+		this.taxiDetail = taxiDetatil;
+	}
+
 	List<Taxi> taxies = new ArrayList<Taxi>();
 	public List<Taxi> createTaxi(int n) {
 		int i;
 		for(i=0;i<n;i++) {
 			Taxi t = new Taxi();
 			taxies.add(t);
+			
 		}
 		return taxies;
 	}
 	public boolean isvail( Booking book) {
+		
 		for(Taxi taxi : taxies) {
 			
 				if(book.getCurPickUp() == taxi.taxiCurPoint && book.getCustPickUpTime() >= taxi.taxiCurTime) {
@@ -66,7 +85,9 @@ public class Taxi {
 					book.setCusTaxiId(taxi.taxiId);
 					taxi.taxiTrip++;
 					taxi.taxiBookingId = book.getBookingId();
-					System.out.println("\n");
+					if(taxi.getTaxiCurTime() > 12) {
+						return false;
+					}
 					return true;
 				}
 				else if(book.getCurPickUp() > taxi.taxiCurPoint && book.getCustPickUpTime() > taxi.taxiCurTime) 
@@ -80,36 +101,28 @@ public class Taxi {
 					taxi.taxiTrip++;
 					taxi.taxiBookingId = book.getBookingId();
 					book.setCusTaxiId(taxi.taxiId);
+					if(taxi.getTaxiCurTime() > 12) {
+						return false;
+					}
+				
 					System.out.println("\n");
 					return true;
 				}
 			}
-		System.out.println("Sorry Taxi not Available");
 		return false;
 	}
 	public void TaxiStatus(ArrayList<Booking> bookings) {
 		System.out.println("--------------------------------------------------------------------");
 		for(Taxi taxi : taxies) {
-			System.out.printf("%-15s%-15s%-15s%-15s%-15s\n","|BookingId|","|PickUpTime|","|PickUpLocation|", "|DropLocation|", "Earning");
-			
+			System.out.printf("%-15s%-15s%-15s%-15s%-15s\n","|BookingId|","|PickUpTime|","|PickUpLocation|", "|DropLocation|", "Earning");	
 			for(Booking book : bookings) {
-		
-				if(taxi.taxiBookingId == book.getBookingId() && taxi.taxiTrip > 0 ) {
-					System.out.printf("%-15d%-15d%-15c%-15c%-15d\n",book.getBookingId(),book.getCustPickUpTime(),book.getCurPickUp(), book.getCusDrop(), book.getJourneyCost());
+				if(taxi.getTaxiId() == book.getCusTaxiId()) {
+					System.out.printf("%5d%15d%17c%15c%13d\n",book.getBookingId(),book.getCustPickUpTime(),book.getCurPickUp(), book.getCusDrop(), book.getJourneyCost());
 				}
 			}
-			System.out.printf("Taxi Id : %-20d \t\t  Total Earning--> %5d\n", taxi.taxiId , taxi.getTaxiEarning());
+			System.out.printf("Taxi Id : %d Taxi Free Time - %-10d Total Earning--> %5d\n", taxi.taxiId ,taxi.getTaxiCurTime(), taxi.getTaxiEarning());
 			System.out.println("--------------------------------------------------------------------");
 		}
-		
-	}
-
-	public int getTaxiBookingId() {
-		return taxiBookingId;
-	}
-
-	public void setTaxiBookingId(int taxiBookingId) {
-		this.taxiBookingId = taxiBookingId;
 	}
 
 }
